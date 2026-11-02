@@ -19,6 +19,6 @@ Verified locally on 2026-11-02 with Node **v24.22.2**, Express **5.3.0**, Mongoo
 - Configure a MongoDB Atlas database user, network access and connection string.
 - Deploy the repository on Render with `MONGODB_URI` and Node 24.
 - Set the deployment root URL in `submit.js` and run the **official** autograder. A local pass is not an official score.
-- Log in to the submission form, provide the required information and LLM survey answers, and submit. The form was checked and requires sign-in; its authenticated fields have not been inspected.
+- The student personally logs in to the submission form, provides the required information and LLM survey answers, and submits. The form was previously checked and required sign-in; no fields were filled in and nothing was submitted. Per the student's follow-up instruction, the assistant must not access or operate the form again.
 
 The student confirmed these accounts/services are not set up yet and requested completed code plus minimal setup instructions first. No deployment, official score or formal submission is claimed in this record.

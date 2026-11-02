@@ -7,7 +7,7 @@ Design: keep the starter's two models and one API router. Use MongoDB transactio
 1. Write HTTP integration tests against a disposable real MongoDB replica set (not mocked models); confirm the starter fails them.
 2. Implement both schemas, CRUD, Mongoose query parameters, strict request validation, replacement PUT semantics and transactional reference synchronization. Run the full test suite on Node 24.
 3. Add minimal Render configuration and setup/submission instructions; preserve the original assignment and grader URL. Record referenced sources and LLM use. Verify secrets remain ignored.
-4. Review against README and FAQ; verify the deployed Atlas/Render API and official grader when account configuration is available. Submit the form only with truthful, complete details.
+4. Review against README and FAQ; verify the deployed Atlas/Render API and official grader when account configuration is available. The student handles the submission form personally; the assistant must not access, fill in or submit it.
 
 Review focus: invalid input and error precedence; PUT defaults and immutable creation dates; completed-task assignment; failed writes and concurrent changes; query combinations and default limits.
 
