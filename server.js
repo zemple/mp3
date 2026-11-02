@@ -1,36 +1,42 @@
-// Get the packages we need
-var express = require('express'),
-    router = express.Router(),
-    mongoose = require('mongoose');
+require('dotenv').config({ quiet: true });
+const express = require('express');
+const mongoose = require('mongoose');
+const User = require('./models/user');
+const Task = require('./models/task');
+const app = express();
 
-// Read .env file
-require('dotenv').config();
-
-// Create our Express application
-var app = express();
-
-// Use environment defined port or 3000
-var port = process.env.PORT || 3000;
-
-// Connect to a MongoDB --> Uncomment this once you have a connection string!!
-//mongoose.connect(process.env.MONGODB_URI).catch(function (err) { console.error('MongoDB connection error:', err.message); });
-
-// Allow CORS so that backend and frontend could be put on different servers
-var allowCrossDomain = function (req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept");
-    res.header("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS");
+app.use((req, res, next) => {
+    res.set('Access-Control-Allow-Origin', '*');
+    res.set('Access-Control-Allow-Headers', 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept');
+    res.set('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE, OPTIONS');
+    if (req.method === 'OPTIONS') return res.status(204).end();
     next();
-};
-app.use(allowCrossDomain);
+});
+app.use('/api', require('./routes'));
+app.use((req, res) => res.status(404).json({ message: 'Resource not found.', data: null }));
+app.use((err, req, res, next) => {
+    let status = 500, message = 'An unexpected server error occurred.';
+    if (err.code === 11000) { status = 400; message = 'Email is already in use.'; }
+    else if (err.type === 'entity.parse.failed' || err.type === 'entity.too.large' ||
+        ['CastError', 'ValidationError', 'StrictModeError'].includes(err.name) ||
+        (err.name === 'MongoServerError' && [2, 9, 14, 168, 31253, 31254].includes(err.code))) {
+        status = 400; message = 'Invalid request values or query parameters.';
+    }
+    else if (err.status === 400 || err.status === 404) { status = err.status; message = err.message; }
+    res.status(status).json({ message, data: null });
+});
 
-// Parse URL-encoded and JSON request bodies
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+async function start() {
+    if (!process.env.MONGODB_URI) throw new Error('MONGODB_URI is required.');
+    await mongoose.connect(process.env.MONGODB_URI);
+    // Build the unique email index before accepting requests.
+    await User.init();
+    await Task.init();
+    const port = process.env.PORT || 3000;
+    app.listen(port, () => console.log(`Server running on port ${port}`));
+}
 
-// Use routes as a module (see index.js)
-require('./routes')(app, router);
-
-// Start the server
-app.listen(port);
-console.log('Server running on port ' + port);
+start().catch(() => {
+    console.error('Startup failed. Check MONGODB_URI, database credentials and Atlas network access.');
+    process.exit(1);
+});
