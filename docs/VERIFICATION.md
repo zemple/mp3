@@ -22,10 +22,15 @@ Verified locally on 2026-11-02 with Node **v24.22.2**, Express **5.3.0**, Mongoo
 - Corrected Express 5 startup error handling: an occupied port now exits with an error instead of printing a misleading success message. Its regression failed before the fix; the full temporary-database suite now passes **17/17** tests.
 - Credential files (`.env` and `*.env`) are ignored and untracked. No credentials are included in the repository.
 
-## External work still required
+## Render deployment and official self-check — 2026-11-03
 
-- Deploy the repository on Render with `MONGODB_URI` and Node 24.
-- Set the deployment root URL in `submit.js` and run the **official** autograder. A local pass is not an official score.
+- Public API: <https://mp3-n5c3.onrender.com/api>. Independent HTTP checks of `/api`, `/api/users?count=true` and `/api/tasks?count=true` returned 200.
+- Render deployed application commit `30ed1b47012699b17479ba1c95b3c75abd9d4f95` with Node 24.22.2 and `npm ci --omit=dev`.
+- Set `submit.js`'s `API_URL` to `https://mp3-n5c3.onrender.com`; kept the course's `AUTOGRADER_URL` unchanged.
+- Ran the original course self-check with Node 24: **100/100 (20/20 points)**, all 19 reported items passed. Full console output is saved in `OFFICIAL_SELF_CHECK.txt`.
+
+## Student action remaining
+
 - The student personally logs in to the submission form, provides the required information and LLM survey answers, and submits. The form was previously checked and required sign-in; no fields were filled in and nothing was submitted. Per the student's follow-up instruction, the assistant must not access or operate the form again.
 
-Atlas is now configured and verified locally. Render deployment, an official score and formal submission are still not claimed in this record.
+Atlas, Render and the official self-check are now verified. An official self-check is not a formal assignment submission; the student must submit and keep the service available for grading.

@@ -2,6 +2,8 @@
 
 作业原文保留在 [README.md](README.md)，边界规则见 [FAQ.md](FAQ.md)。本项目只实现后端 API，没有前端。
 
+当前已部署：<https://mp3-n5c3.onrender.com/api>。2026-11-03 官方自测 **100/100**；结果见 `docs/OFFICIAL_SELF_CHECK.txt`。正式提交时使用的部署根地址是 `https://mp3-n5c3.onrender.com`，公开代码仓库是 <https://github.com/zemple/mp3>。
+
 ## 1. MongoDB Atlas
 
 1. 在 Atlas 创建免费集群、一个数据库用户；在 Network Access 添加作业要求的 **Allow access from anywhere**。
