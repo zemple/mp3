@@ -69,6 +69,24 @@ const user = (name = 'Alice', extra = {}) => call('POST', '/users', { name, emai
 const task = (extra = {}) => call('POST', '/tasks', { name: 'Homework', deadline, ...extra }, 201);
 const query = (path, values) => path + '?' + new URLSearchParams(Object.entries(values).map(([k, v]) => [k, JSON.stringify(v)]));
 
+test('an occupied port exits with an error instead of reporting startup success', async () => {
+    const child = spawn(process.execPath, ['server.js'], {
+        cwd: require('node:path').resolve(__dirname, '..'),
+        env: { ...process.env, PORT: new URL(base).port, MONGODB_URI: mongo.getUri('mp3_test') },
+        stdio: ['ignore', 'pipe', 'pipe']
+    });
+    let stdout = '', stderr = '';
+    child.stdout.on('data', chunk => { stdout += chunk; });
+    child.stderr.on('data', chunk => { stderr += chunk; });
+    const code = await new Promise(resolve => {
+        const timer = setTimeout(() => child.kill(), 5000);
+        child.once('exit', code => { clearTimeout(timer); resolve(code); });
+    });
+    assert.equal(code, 1);
+    assert.doesNotMatch(stdout, /Server running/);
+    assert.match(stderr, /port/i);
+});
+
 test('creates users and tasks with defaults and server-owned creation dates', async () => {
     const u = await user('Alice', { dateCreated: '2000-01-01', _id: missing });
     assert.deepEqual(u.pendingTasks, []);

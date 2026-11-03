@@ -33,7 +33,13 @@ async function start() {
     await User.init();
     await Task.init();
     const port = process.env.PORT || 3000;
-    app.listen(port, () => console.log(`Server running on port ${port}`));
+    app.listen(port, error => {
+        if (error) {
+            console.error(`Server could not listen on port ${port}. Check whether it is already in use.`);
+            process.exit(1);
+        }
+        console.log(`Server running on port ${port}`);
+    });
 }
 
 start().catch(() => {
